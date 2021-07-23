@@ -1,4 +1,4 @@
-NAME	:= program_name
+NAME	:= pipex
 CC		:= gcc
 INCLUDE	:= -I./includes -I./Libft
 CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
@@ -11,7 +11,7 @@ B_SRCS	:= main_bonus.c
 B_OBJS	:= $(B_SRCS:%.c=$(SRCDIR)%.o)
 B_FLG	:= .bonus_flg
 
-.PHONY: all clean fclean re bonus test
+.PHONY: all clean fclean re bonus norm leak leak_bonus tests
 
 all: $(NAME)
 
@@ -47,7 +47,7 @@ norm:
 leak: $(LIBFT) $(OBJS)
 	$(CC) $(LIBS) $(OBJS) ./tests/sharedlib.c -o $(NAME)
 
-bonus_leak: $(LIBFT) $(B_OBJS)
+leak_bonus: $(LIBFT) $(B_OBJS)
 	$(CC) $(LIBS) $(B_OBJS) ./tests/sharedlib.c -o $(B_NAME)
 
 tests: leak
