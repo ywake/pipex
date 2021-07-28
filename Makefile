@@ -23,12 +23,12 @@ $(LIBFT): ./Libft/*.c
 	cp ./Libft/libft.a ./libft.a
 
 $(NAME):  $(LIBFT) $(OBJS)
-	$(CC) $(LIBS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 
 bonus: $(B_FLG)
 
 $(B_FLG): $(LIBFT) $(B_OBJS)
-	$(CC) $(LIBS) $(B_OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(B_OBJS) -o $(NAME) $(LIBS)
 
 clean:
 	$(MAKE) clean -C ./Libft
@@ -44,12 +44,26 @@ norm:
 	@printf "\e[31m"; norminette srcs includes Libft tests/**/test.c | grep -v ": OK!" \
 	|| printf "\e[32m%s\n\e[m" "Norm OK!"; printf "\e[m"
 
-leak: $(LIBFT) $(OBJS)
-	$(CC) $(LIBS) $(OBJS) ./tests/sharedlib.c -o $(NAME)
+# leak: $(LIBFT) $(OBJS)
+# 	$(CC) $(CFLAGS) $(OBJS) ./tests/sharedlib.c -o $(NAME) $(LIBS)
 
-leak_bonus: $(LIBFT) $(B_OBJS)
-	$(CC) $(LIBS) $(B_OBJS) ./tests/sharedlib.c -o $(B_NAME)
+# leak_bonus: $(LIBFT) $(B_OBJS)
+# 	$(CC) $(CFLAGS) $(B_OBJS) ./tests/sharedlib.c -o $(B_NAME) $(LIBS)
 
-tests: leak
+tester: $(LIBFT) ./srcs/tester/*.c
+	$(CC) $(CFLAGS) ./srcs/tester/*.c -o tester $(LIBS)
+
+Darwin_leak:
+	$(CC) $(CFLAGS) $(B_OBJS) ./tests/sharedlib.c -o $(B_NAME) $(LIBS)
+
+Linux_leak:
+	$(CC) $(CFLAGS) -fsanitize=leak $(B_OBJS) -o $(B_NAME) $(LIBS)
+
+leak: $(shell uname)_leak
+
+debug:
+	$(CC) $(CFLAGS) -fsanitize=address $(B_OBJS) -o $(B_NAME) $(LIBS)
+
+tests: leak tester
 	bash auto_test.sh $(TEST)\
 	&& $(MAKE) norm
