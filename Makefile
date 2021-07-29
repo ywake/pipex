@@ -53,10 +53,10 @@ norm:
 tester: $(LIBFT) ./srcs/tester/*.c
 	$(CC) $(CFLAGS) ./srcs/tester/*.c -o tester $(LIBS)
 
-Darwin_leak:
-	$(CC) $(CFLAGS) $(B_OBJS) ./tests/sharedlib.c -o $(B_NAME) $(LIBS)
+Darwin_leak: $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) ./tests/sharedlib.c -o $(NAME) $(LIBS)
 
-Linux_leak:
+Linux_leak: $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) -fsanitize=leak $(B_OBJS) -o $(B_NAME) $(LIBS)
 
 leak: $(shell uname)_leak
