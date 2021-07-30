@@ -1,22 +1,24 @@
 #include "pipex.h"
 
 #include <stdio.h>
+#include <unistd.h>
 
 enum e_args
 {
-	FILE1 = 1,
+	INFILE = 1,
 	CMD1,
 	CMD2,
-	FILE2,
+	OUTFILE,
 };
 
 int	main(int argc, char *argv[])
 {
-	char	*file;
+	// char	*file;
 
 	(void)argc;
-	printf("file1: %s\ncmd1: %s\ncmd2: %s\nfile2: %s\n",
-		argv[FILE1], argv[CMD1], argv[CMD2], argv[FILE2]);
-	file = readfile(argv[FILE1]);
-	printf("%s\n", file);
+	// printf("file1: %s\ncmd1: %s\ncmd2: %s\nfile2: %s\n",
+	// 	argv[INFILE], argv[CMD1], argv[CMD2], argv[OUTFILE]);
+	redirect_in(argv[INFILE]);
+	redirect_out(argv[OUTFILE]);
+	execve("/bin/cat", NULL, NULL);
 }
