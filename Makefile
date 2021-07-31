@@ -3,7 +3,7 @@ CC		:= gcc
 INCLUDE	:= -I./includes -I./Libft
 CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
 LIBFT	:= ./libft.a
-LIBS	:= -L. -lft
+LIBS	:= -L./Libft -lft
 SRCDIR	:= ./srcs/
 SRCS	:= main.c readfile.c error.c redirection.c
 OBJS	:= $(SRCS:%.c=$(SRCDIR)%.o)
