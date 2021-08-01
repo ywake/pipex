@@ -62,7 +62,7 @@ int	arg_recur(int argc, char *argv[], char *envp[], int index)
 
 int	main(int argc, char *argv[], char *envp[])
 {
-	if (argc != 5)
+	if (argc < 5)
 		return (0);
 	return (arg_recur(argc, argv, envp, 1));
 }
