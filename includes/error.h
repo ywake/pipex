@@ -2,6 +2,7 @@
 # define ERROR_H
 
 void	pexit(char *str);
-void	exit_if_err(int status, char *msg);
+int		catch_err(int status, char *msg);
+void	*catch_nul(void *ptr, char *msg);
 
 #endif

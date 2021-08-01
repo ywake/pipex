@@ -5,7 +5,7 @@ CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
 LIBFT	:= ./libft.a
 LIBS	:= -L./Libft -lft
 SRCDIR	:= ./srcs/
-SRCS	:= main.c readfile.c error.c redirection.c
+SRCS	:= main.c error.c redirection.c exec.c
 OBJS	:= $(SRCS:%.c=$(SRCDIR)%.o)
 B_SRCS	:= main_bonus.c
 B_OBJS	:= $(B_SRCS:%.c=$(SRCDIR)%.o)

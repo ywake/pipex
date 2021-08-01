@@ -1,8 +1,6 @@
 #include "pipex.h"
 
-#include <stdio.h>
 #include <unistd.h>
-#include <stdlib.h>
 #include <sys/wait.h>
 #include "error.h"
 #include "libft.h"
@@ -11,54 +9,60 @@
 
 void	dup_pipe(int pipefd[2], int fd)
 {
-	exit_if_err(dup2(pipefd[fd], fd), "dup2");
-	exit_if_err(close(pipefd[0]), "close");
-	exit_if_err(close(pipefd[1]), "close");
+	catch_err(dup2(pipefd[fd], fd), "dup2");
+	catch_err(close(pipefd[0]), "close");
+	catch_err(close(pipefd[1]), "close");
 }
 
-void	child_task(int pipefd[2], int argc, char *argv[], int index)
+int	parent_task(int pipefd[2], int argc, int index)
 {
 	int	status;
 
+	wait(&status);
 	if (index != argc - 2)
-		dup_pipe(pipefd, STDOUT_FILENO);
+		dup_pipe(pipefd, STDIN_FILENO);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	else if (WIFSIGNALED(status))
+		return (WTERMSIG(status));
+	else if (WIFSTOPPED(status))
+		return (WSTOPSIG(status));
 	else
-		redirect_out(argv[argc - 1]);
-	status = execvp(argv[index], ft_split(argv[index], ' '));
-	exit_if_err(status, "execve");
-	exit(status);
+		return (EXIT_FAILURE);
 }
 
-int	exec_cmd(int argc, char *argv[], int index, int status)
+int	arg_recur(int argc, char *argv[], char *envp[], int index)
 {
 	int		pipefd[2];
 	pid_t	pid;
+	int		status;
 
-	if (index == argc - 1)
-		return (status);
-	else if (index == 1)
+	if (index == 1)
 		redirect_in(argv[index]);
 	else
 	{
 		if (index != argc - 2)
-			exit_if_err(pipe(pipefd), "pipe");
-		pid = fork();
+			catch_err(pipe(pipefd), "pipe");
+		catch_err((pid = fork()), "fork");
 		if (pid == CHILD)
-			child_task(pipefd, argc, argv, index);
-		else
 		{
-			exit_if_err(pid, "fork");
-			wait(&status);
 			if (index != argc - 2)
-				dup_pipe(pipefd, STDIN_FILENO);
+				dup_pipe(pipefd, STDOUT_FILENO);
+			else
+				redirect_out(argv[argc - 1]);
+			exec_cmd(argv, envp, index);
 		}
+		else
+			status = parent_task(pipefd, argc, index);
 	}
-	return (exec_cmd(argc, argv, index + 1, status));
+	if (index == argc - 2)
+		return (status);
+	return (arg_recur(argc, argv, envp, index + 1));
 }
 
-int	main(int argc, char *argv[])
+int	main(int argc, char *argv[], char *envp[])
 {
 	if (argc != 5)
 		return (0);
-	return (exec_cmd(argc, argv, 1, 0));
+	return (arg_recur(argc, argv, envp, 1));
 }

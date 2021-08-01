@@ -9,8 +9,16 @@ void	pexit(char *str)
 	exit(1);
 }
 
-void	exit_if_err(int status, char *msg)
+int	catch_err(int status, char *msg)
 {
 	if (status == -1)
 		pexit(msg);
+	return (status);
+}
+
+void	*catch_nul(void *ptr, char *msg)
+{
+	if (ptr == NULL)
+		pexit(msg);
+	return (ptr);
 }
