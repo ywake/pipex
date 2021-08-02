@@ -24,22 +24,22 @@ char	**get_fullpath(char *path, char *cmd)
 	return (paths);
 }
 
-void	exec_cmd_with_path(
-	char *argv[], char *envp[], int index, char *new_argv[])
+void	exec_cmd_with_path(char *argv[], int index, char *new_argv[])
 {
-	int		i;
-	char	**fullpaths;
+	int			i;
+	char		**fullpaths;
+	extern char	**environ;
 
 	i = 0;
-	while (envp[i])
-		if (!ft_strncmp(envp[i++], "PATH=", 5))
+	while (environ[i])
+		if (!ft_strncmp(environ[i++], "PATH=", 5))
 			break ;
-	fullpaths = get_fullpath(envp[i - 1], new_argv[0]);
+	fullpaths = get_fullpath(environ[i - 1], new_argv[0]);
 	i = 0;
 	while (fullpaths[i])
 	{
 		if (access(fullpaths[i], X_OK) == 0)
-			exit(catch_err(execve(fullpaths[i], new_argv, envp), "execve"));
+			exit(catch_err(execve(fullpaths[i], new_argv, environ), "execve"));
 		i++;
 	}
 	ft_putstr_fd("pipex: command not found: ", 2);
@@ -47,13 +47,14 @@ void	exec_cmd_with_path(
 	exit(127);
 }
 
-void	exec_cmd(char *argv[], char *envp[], int index)
+void	exec_cmd(char *argv[], int index)
 {
-	char	**new_argv;
+	char		**new_argv;
+	extern char	**environ;
 
 	new_argv = catch_nul(ft_split(argv[index], ' '), "ft_split");
 	if (!ft_strchr(new_argv[0], '/'))
-		exec_cmd_with_path(argv, envp, index, new_argv);
+		exec_cmd_with_path(argv, index, new_argv);
 	if (catch_err(access(new_argv[0], X_OK), new_argv[0]) == 0)
-		exit(catch_err(execve(new_argv[0], new_argv, envp), "execve"));
+		exit(catch_err(execve(new_argv[0], new_argv, environ), "execve"));
 }

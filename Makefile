@@ -2,7 +2,7 @@ NAME	:= pipex
 CC		:= gcc
 INCLUDE	:= -I./includes -I./Libft
 CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
-LIBFT	:= ./libft.a
+LIBFT	:= ./Libft/libft.a
 LIBS	:= -L./Libft -lft
 SRCDIR	:= ./srcs/
 SRCS	:= main.c error.c redirection.c exec.c
@@ -21,9 +21,8 @@ all: $(NAME)
 
 $(LIBFT): ./Libft/*.c
 	$(MAKE) bonus -C ./Libft
-	cp ./Libft/libft.a ./libft.a
 
-$(NAME):  $(LIBFT) $(OBJS)
+$(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(LIBS)
 
 bonus: $(B_FLG)

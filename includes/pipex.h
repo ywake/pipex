@@ -3,6 +3,6 @@
 
 void	redirect_in(char *filename);
 void	redirect_out(char *filename);
-void	exec_cmd(char *argv[], char *envp[], int index);
+void	exec_cmd(char *argv[], int index);
 
 #endif
