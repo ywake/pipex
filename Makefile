@@ -69,5 +69,6 @@ debug:
 	$(CC) $(CFLAGS) -fsanitize=address $(OBJS) -o $(NAME) $(LIBS)
 
 tests: leak tester
+	chmod -r ./tests/infile/no_perm
 	bash auto_test.sh $(TEST)\
 	&& $(MAKE) norm

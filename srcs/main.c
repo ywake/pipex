@@ -37,24 +37,21 @@ int	arg_recur(int argc, char *argv[], char *envp[], int index)
 	pid_t	pid;
 	int		status;
 
-	if (index == 1)
-		redirect_in(argv[index]);
-	else
+	if (index != argc - 2)
+		catch_err(pipe(pipefd), "pipe");
+	pid = catch_err(fork(), "fork");
+	if (pid == CHILD)
 	{
+		if (index == 2)
+			redirect_in(argv[1]);
 		if (index != argc - 2)
-			catch_err(pipe(pipefd), "pipe");
-		pid = catch_err(fork(), "fork");
-		if (pid == CHILD)
-		{
-			if (index != argc - 2)
-				dup_pipe(pipefd, STDOUT_FILENO);
-			else
-				redirect_out(argv[argc - 1]);
-			exec_cmd(argv, envp, index);
-		}
+			dup_pipe(pipefd, STDOUT_FILENO);
 		else
-			status = parent_task(pipefd, argc, index);
+			redirect_out(argv[argc - 1]);
+		exec_cmd(argv, envp, index);
 	}
+	else
+		status = parent_task(pipefd, argc, index);
 	if (index == argc - 2)
 		return (status);
 	return (arg_recur(argc, argv, envp, index + 1));
@@ -64,5 +61,5 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	if (argc != 5)
 		return (0);
-	return (arg_recur(argc, argv, envp, 1));
+	return (arg_recur(argc, argv, envp, 2));
 }
