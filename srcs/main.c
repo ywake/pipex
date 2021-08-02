@@ -14,11 +14,11 @@ void	dup_pipe(int pipefd[2], int fd)
 	catch_err(close(pipefd[1]), "close");
 }
 
-int	parent_task(int pipefd[2], int argc, int index)
+int	parent_task(pid_t c_pid, int pipefd[2], int argc, int index)
 {
 	int	status;
 
-	wait(&status);
+	catch_err(waitpid(c_pid, &status, WNOHANG), "waitpid");
 	if (index != argc - 2)
 		dup_pipe(pipefd, STDIN_FILENO);
 	if (WIFEXITED(status))
@@ -31,7 +31,7 @@ int	parent_task(int pipefd[2], int argc, int index)
 		return (EXIT_FAILURE);
 }
 
-int	arg_recur(int argc, char *argv[], char *envp[], int index)
+int	arg_loop(int argc, char *argv[], int index)
 {
 	int		pipefd[2];
 	pid_t	pid;
@@ -48,18 +48,24 @@ int	arg_recur(int argc, char *argv[], char *envp[], int index)
 			dup_pipe(pipefd, STDOUT_FILENO);
 		else
 			redirect_out(argv[argc - 1]);
-		exec_cmd(argv, envp, index);
+		exec_cmd(argv, index);
 	}
 	else
-		status = parent_task(pipefd, argc, index);
+		status = parent_task(pid, pipefd, argc, index);
 	if (index == argc - 2)
 		return (status);
-	return (arg_recur(argc, argv, envp, index + 1));
+	return (arg_loop(argc, argv, index + 1));
 }
 
-int	main(int argc, char *argv[], char *envp[])
+int	main(int argc, char *argv[])
 {
+	int	status;
+	int	status2;
+
 	if (argc != 5)
 		return (0);
-	return (arg_recur(argc, argv, envp, 2));
+	status = arg_loop(argc, argv, 2);
+	while (waitpid(-1, &status2, 0) > 0)
+		;
+	return (status);
 }
