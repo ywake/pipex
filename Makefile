@@ -2,21 +2,23 @@ NAME	:= pipex
 CC		:= gcc
 INCLUDE	:= -I./includes -I./Libft
 CFLAGS	:= -g -Wall -Werror -Wextra $(INCLUDE)
-LIBFT	:= ./Libft/libft.a
 LIBS	:= -L./Libft -lft
-SRCDIR	:= ./srcs/
-SRCS	:= main.c error.c redirection.c exec.c
-OBJS	:= $(SRCS:%.c=$(SRCDIR)%.o)
-B_SRCS	:= main_bonus.c error.c redirection.c exec.c
-B_OBJS	:= $(B_SRCS:%.c=$(SRCDIR)%.o)
-B_FLG	:= .bonus_flg
-DSTRCTR	:= tests/destructor.c
+VPATH	:= srcs
 
-.PHONY: all clean fclean re bonus norm leak leak_bonus tests
+LIBFT	:= ./Libft/libft.a
+OBJDIR	:= ./objs/
+SRCS	:= main.c error.c redirection.c exec.c
+OBJS	:= $(SRCS:%.c=$(OBJDIR)%.o)
+B_SRCS	:= main_bonus.c error.c redirection.c exec.c
+B_OBJS	:= $(B_SRCS:%.c=$(OBJDIR)%.o)
+B_FLG	:= .bonus_flg
+DSTRCTR	:= ./tests/destructor.c
+
+.PHONY: all clean fclean re bonus norm leak Darwin_leak Linux_leak leak_bonus tests
 
 all: $(NAME)
 
-%.o: $(SRCDIR)%.c *.h
+$(OBJDIR)%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(LIBFT): ./Libft/*.c
@@ -35,7 +37,7 @@ clean:
 	rm -f $(OBJS) $(B_OBJS)
 
 fclean: clean
-	rm -f libft.a
+	$(MAKE) fclean -C ./Libft
 	rm -f $(NAME)
 
 re: fclean all
@@ -54,7 +56,7 @@ tester: $(LIBFT) ./srcs/tester/*.c
 	$(CC) $(CFLAGS) ./srcs/tester/*.c -o tester $(LIBS)
 
 $(DSTRCTR):
-	curl https://gist.githubusercontent.com/ywake/793a72da8cdae02f093c02fc4d5dc874/raw/2aac6fc82ab4e7305d35c95ec793b1c9c2016d40/destructor.c > $(DSTRCTR)
+	curl https://gist.githubusercontent.com/ywake/793a72da8cdae02f093c02fc4d5dc874/raw/destructor.c > $(DSTRCTR)
 
 Darwin_leak: $(LIBFT) $(OBJS) $(DSTRCTR)
 	$(CC) $(CFLAGS) $(OBJS) $(DSTRCTR) -o $(NAME) $(LIBS)
