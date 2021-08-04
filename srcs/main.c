@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/08/04 12:37:00 by ywake             #+#    #+#             */
+/*   Updated: 2021/08/04 12:37:01 by ywake            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "pipex.h"
 
 #include <unistd.h>
@@ -66,6 +78,6 @@ int	main(int argc, char *argv[])
 		return (0);
 	status = arg_loop(argc, argv, 2);
 	while (waitpid(-1, &status2, 0) > 0)
-		;
+		close(0), close(1);
 	return (status);
 }
