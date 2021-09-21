@@ -23,22 +23,21 @@ chmod -x ./no_perm_ex
 cp ./tester ./no_perm_read
 chmod -r ./no_perm_read
 
-files=(
+infiles=(
 	"tests/infile/normal"
+	"tests/infile/no_exists"
+	"tests/infile/no_perm"
 )
-# for file in $(find ./tests/infile -type f)
-# do
-#     files=(${files[@]} $file)
-# done
 
-for i in ${!array[@]};
+for infile in ${infiles[@]};
 do
-	for file in ${files[@]};
+	printf "\e[1m--------- < $infile ---------\e[m\n"
+	for i in ${!array[@]};
 	do
-		echo "< $file `echo ${array[$i]} | sed "s/'//g"` > tests/expect" | bash
+		echo "< $infile `echo ${array[$i]} | sed "s/'//g"` > tests/expect" | zsh
 		EX_STATUS=$?
-		# echo "./tester $file `echo ${array[$i]} | sed 's/ | / /g'` tests/out" | bash
-		echo "./pipex $file `echo ${array[$i]} | sed 's/ | / /g'` tests/out" | bash
+		# echo "./tester $infile `echo ${array[$i]} | sed 's/ | / /g'` tests/out" | zsh
+		echo "./pipex $infile `echo ${array[$i]} | sed 's/ | / /g'` tests/out" | zsh
 		STATUS=$?
 
 		diff tests/out tests/expect > /dev/null

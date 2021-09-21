@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 12:37:18 by ywake             #+#    #+#             */
-/*   Updated: 2021/09/21 17:12:19 by ywake            ###   ########.fr       */
+/*   Updated: 2021/09/21 22:49:11 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	redirect_out(char *filename)
 	catch_err(close(fd), "close");
 }
 
-void	connect_pipe(pid_t pipefd[2], int fd)
+void	connect_pipe(int pipefd[2], int fd)
 {
 	catch_err(dup2(pipefd[fd], fd), "dup2");
 	catch_err(close(pipefd[0]), "close");
