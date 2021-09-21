@@ -62,6 +62,14 @@ Linux_leak: $(LIBFT) $(OBJS)
 
 leak: $(shell uname)_leak
 
+Darwin_leak_bonus: $(LIBFT) $(B_OBJS) $(DSTRCTR)
+	$(CC) $(CFLAGS) $(B_OBJS) $(DSTRCTR) -o $(NAME) $(LIBS)
+
+Linux_leak_bonus: $(LIBFT) $(B_OBJS)
+	$(CC) $(CFLAGS) -fsanitize=leak $(B_OBJS) -o $(NAME) $(LIBS)
+
+leak_bonus: $(shell uname)_leak_bonus
+
 debug:
 	$(CC) $(CFLAGS) -fsanitize=address $(OBJS) -o $(NAME) $(LIBS)
 
