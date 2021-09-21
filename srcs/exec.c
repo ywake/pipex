@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 12:37:23 by ywake             #+#    #+#             */
-/*   Updated: 2021/09/21 17:13:10 by ywake            ###   ########.fr       */
+/*   Updated: 2021/09/21 17:49:19 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	**get_fullpath(char *path, char *cmd)
 	return (paths);
 }
 
-void	exec_cmd_with_path(char *argv[], int index, char *new_argv[])
+void	exec_cmd_with_path(char *new_argv[])
 {
 	int			i;
 	char		**fullpaths;
@@ -55,9 +55,12 @@ void	exec_cmd_with_path(char *argv[], int index, char *new_argv[])
 			exit(catch_err(execve(fullpaths[i], new_argv, environ), "execve"));
 		i++;
 	}
-	ft_putstr_fd("pipex: command not found: ", 2);
-	ft_putendl_fd(argv[index], 2);
-	exit(127);
+	if (errno == ENOENT)
+		command_not_found(new_argv[0]);
+	else if (errno == EACCES)
+		pexit(new_argv[0], 126);
+	else
+		pexit(new_argv[0], 1);
 }
 
 void	exec_cmd(char *argv[], int index)
@@ -67,7 +70,7 @@ void	exec_cmd(char *argv[], int index)
 
 	new_argv = catch_nul(ft_split(argv[index], ' '), "ft_split");
 	if (!ft_strchr(new_argv[0], '/'))
-		exec_cmd_with_path(argv, index, new_argv);
+		exec_cmd_with_path(new_argv);
 	if (access(new_argv[0], X_OK) == 0)
 		exit(catch_err(execve(new_argv[0], new_argv, environ), "execve"));
 	else if (errno == ENOENT)

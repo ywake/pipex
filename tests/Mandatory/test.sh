@@ -1,3 +1,5 @@
+export PATH="$PATH:$PWD"
+
 array=(
 	"cat | wc"
 	"cat | 'wc -l'"
@@ -6,7 +8,9 @@ array=(
 	"cat | ./no_perm_read"
 
 	"cat | ./no_exist"
+	"cat | no_exist"
 	"cat | ./no_perm_ex"
+	"cat | 'no_perm_ex arg1'"
 	"cat | 'wc -wrong-option'"
 	"'ls no_such_file' | 'ls no_such_file'"
 
