@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 12:37:23 by ywake             #+#    #+#             */
-/*   Updated: 2021/08/04 12:37:24 by ywake            ###   ########.fr       */
+/*   Updated: 2021/09/21 17:03:11 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <errno.h>
 #include "libft.h"
 #include "error.h"
 
@@ -67,6 +68,12 @@ void	exec_cmd(char *argv[], int index)
 	new_argv = catch_nul(ft_split(argv[index], ' '), "ft_split");
 	if (!ft_strchr(new_argv[0], '/'))
 		exec_cmd_with_path(argv, index, new_argv);
-	if (catch_err(access(new_argv[0], X_OK), new_argv[0]) == 0)
+	if (access(new_argv[0], X_OK) == 0)
 		exit(catch_err(execve(new_argv[0], new_argv, environ), "execve"));
+	else if (errno == ENOENT)
+		pexit("pipex", 127);
+	else if (errno == EACCES)
+		pexit("pipex", 126);
+	else
+		pexit("pipex", 1);
 }

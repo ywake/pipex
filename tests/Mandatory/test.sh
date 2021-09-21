@@ -1,17 +1,17 @@
 array=(
-	# "cat | wc"
-	# "cat | 'wc -l'"
-	# "'ls -l' | 'wc -l'"
+	"cat | wc"
+	"cat | 'wc -l'"
+	"'ls -l' | 'wc -l'"
 	"cat | ./tester"
-	# "cat | ./no_perm_read"
+	"cat | ./no_perm_read"
 
-	# "cat | ./no_exist"
-	# "cat | ./no_perm_ex"
-	# "cat | 'wc -a'"
-	# "'ls no_such_file' | 'ls no_such_file'"
+	"cat | ./no_exist"
+	"cat | ./no_perm_ex"
+	"cat | 'wc -wrong-option'"
+	"'ls no_such_file' | 'ls no_such_file'"
 
 	## ノンブロッキングのテスト
-	# "cat | ls"
+	"cat | ls"
 )
 
 cp ./tester ./no_perm_ex
@@ -38,11 +38,11 @@ do
 		STATUS=$?
 
 		diff tests/out tests/expect > /dev/null
-			echo "status code => out: $STATUS / expect: $EX_STATUS"
 		if [ $? -eq 0 ] && [ $STATUS -eq $EX_STATUS ]; then
-			printf "\e[1m %s \e[32m %s \e[m\n" "${array[$i]}" "✓"
+			printf "\e[1m %s \e[32m %s \e[m\n\n" "${array[$i]}" "✓"
 		else
 			printf "\e[1m %s \e[31m %s \e[m\n" "${array[$i]}" "×"
+			echo "status code => out: $STATUS / expect: $EX_STATUS"
 			diff -y -W 80 ./tests/out ./tests/expect
 			FLG=1
 		fi
