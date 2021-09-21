@@ -9,7 +9,7 @@
 !*.c
 !*.h
 !srcs
-!srcs/**
+!srcs/**/
 !objs
 !includes
 !auto_test.sh

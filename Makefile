@@ -38,22 +38,18 @@ clean:
 
 fclean: clean
 	$(MAKE) fclean -C ./Libft
+	rm -f tester
 	rm -f $(NAME)
 
 re: fclean all
 
 norm:
-	@printf "\e[31m"; norminette srcs includes Libft | grep -v ": OK!" \
+	@printf "\e[31m"; norminette | grep -v -e ": OK!" \
+    && exit 1 \
 	|| printf "\e[32m%s\n\e[m" "Norm OK!"; printf "\e[m"
 
-# leak: $(LIBFT) $(OBJS)
-# 	$(CC) $(CFLAGS) $(OBJS) ./tests/sharedlib.c -o $(NAME) $(LIBS)
-
-# leak_bonus: $(LIBFT) $(B_OBJS)
-# 	$(CC) $(CFLAGS) $(B_OBJS) ./tests/sharedlib.c -o $(B_NAME) $(LIBS)
-
-tester: $(LIBFT) ./srcs/tester/*.c
-	$(CC) $(CFLAGS) ./srcs/tester/*.c -o tester $(LIBS)
+tester: $(LIBFT) ./tests/tester/*.c
+	$(CC) $(CFLAGS) ./tests/tester/*.c -o tester $(LIBS)
 
 $(DSTRCTR):
 	curl https://gist.githubusercontent.com/ywake/793a72da8cdae02f093c02fc4d5dc874/raw/destructor.c > $(DSTRCTR)
@@ -71,5 +67,6 @@ debug:
 
 tests: leak tester
 	chmod -r ./tests/infile/no_perm
+	chmod -w ./tests/outfile/no_perm
 	bash auto_test.sh $(TEST)\
 	&& $(MAKE) norm
