@@ -7,9 +7,9 @@ VPATH	:= srcs
 
 LIBFT	:= ./Libft/libft.a
 OBJDIR	:= ./objs/
-SRCS	:= main.c error.c redirection.c exec.c
+SRCS	:= main.c error.c utils.c exec.c
 OBJS	:= $(SRCS:%.c=$(OBJDIR)%.o)
-B_SRCS	:= main_bonus.c error.c redirection.c exec.c
+B_SRCS	:= main_bonus.c error.c utils.c exec.c
 B_OBJS	:= $(B_SRCS:%.c=$(OBJDIR)%.o)
 B_FLG	:= .bonus_flg
 DSTRCTR	:= ./tests/destructor.c

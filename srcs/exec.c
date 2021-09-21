@@ -6,7 +6,7 @@
 /*   By: ywake <ywake@student.42tokyo.jp>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/04 12:37:23 by ywake             #+#    #+#             */
-/*   Updated: 2021/09/21 17:03:11 by ywake            ###   ########.fr       */
+/*   Updated: 2021/09/21 17:13:10 by ywake            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,9 @@ void	exec_cmd(char *argv[], int index)
 	if (access(new_argv[0], X_OK) == 0)
 		exit(catch_err(execve(new_argv[0], new_argv, environ), "execve"));
 	else if (errno == ENOENT)
-		pexit("pipex", 127);
+		pexit(new_argv[0], 127);
 	else if (errno == EACCES)
-		pexit("pipex", 126);
+		pexit(new_argv[0], 126);
 	else
-		pexit("pipex", 1);
+		pexit(new_argv[0], 1);
 }
