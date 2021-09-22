@@ -29,6 +29,8 @@ infiles=(
 	"tests/infile/no_perm"
 )
 
+make leak || exit 1
+
 for infile in ${infiles[@]};
 do
 	printf "\e[1m--------- < $infile ---------\e[m\n"

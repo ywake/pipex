@@ -14,7 +14,7 @@ B_OBJS	:= $(B_SRCS:%.c=$(OBJDIR)%.o)
 B_FLG	:= .bonus_flg
 DSTRCTR	:= ./tests/destructor.c
 
-.PHONY: all clean fclean re bonus norm leak Darwin_leak Linux_leak leak_bonus tests
+.PHONY: all clean fclean re bonus norm leak Darwin_leak Linux_leak leak_bonus Darwin_leak_bonus Linux_leak_bonus tests
 
 all: $(NAME)
 
@@ -38,8 +38,9 @@ clean:
 
 fclean: clean
 	$(MAKE) fclean -C ./Libft
-	rm -f tester
-	rm -f $(NAME)
+	rm -f $(NAME) tester leaksout
+	rm -rf tester.dSYM/
+	rm -rf $(NAME).dSYM/
 
 re: fclean all
 
@@ -66,15 +67,10 @@ Darwin_leak_bonus: $(LIBFT) $(B_OBJS) $(DSTRCTR)
 	$(CC) $(CFLAGS) $(B_OBJS) $(DSTRCTR) -o $(NAME) $(LIBS)
 
 Linux_leak_bonus: $(LIBFT) $(B_OBJS)
-	$(CC) $(CFLAGS) -fsanitize=leak $(B_OBJS) -o $(NAME) $(LIBS)
+	$(CC) $(CFLAGS) -fsanitize=address $(B_OBJS) -o $(NAME) $(LIBS)
 
 leak_bonus: $(shell uname)_leak_bonus
 
-debug:
-	$(CC) $(CFLAGS) -fsanitize=address $(OBJS) -o $(NAME) $(LIBS)
-
 tests: leak tester
 	chmod -r ./tests/infile/no_perm
-	chmod -w ./tests/outfile/no_perm
-	bash auto_test.sh $(TEST)\
-	&& $(MAKE) norm
+	bash auto_test.sh $(TEST)
